@@ -1,0 +1,71 @@
+{
+  "$schema": "https://learn.microsoft.com/en-us/azure/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vnetName": {
+      "type": "string",
+      "defaultValue": "vnet-1",
+      "metadata": {
+        "description": "The name of the virtual network to be created."
+      }
+    },
+    "vnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.0.0/16",
+      "metadata": {
+        "description": "The address prefix for the virtual network."
+      }
+    },
+    "subnetName": {
+      "type": "string",
+      "defaultValue": "subnet-1",
+      "metadata": {
+        "description": "The name of the subnet to be created."
+      }
+    },
+    "subnetAddressPrefix": {
+      "type": "string",
+      "defaultValue": "192.168.0.0/24",
+      "metadata": {
+        "description": "The address prefix for the subnet."
+      }
+    } 
+  },
+  "functions": [],
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2025-09-01",
+      "name": "[parameters('vnetName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {     
+        "addressSpace": {
+          "addressPrefixes": [ "[parameters('vnetAddressPrefix')]" ]
+        }
+      },
+      "tags": {
+        "CostCenter": "000",
+        "Environment": "Development",
+        "Service": "SCOLP",
+        "Owner": "MDTP"
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2025-09-01",
+      "name": "[concat(parameters('vnetName'), '/', parameters('subnetName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+      ],
+      "properties": {
+        "addressPrefix": "[parameters('subnetAddressPrefix')]",
+        "delegations": [],
+        "privateEndpointNetworkPolicies": "Disabled",
+        "privateLinkServiceNetworkPolicies": "Enabled",
+        "defaultOutboundAccess": false
+      }
+    }
+  ],
+  "outputs": {}
+}
