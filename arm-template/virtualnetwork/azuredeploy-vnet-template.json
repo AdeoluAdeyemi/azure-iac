@@ -28,8 +28,22 @@
       "defaultValue": "192.168.0.0/24",
       "metadata": {
         "description": "The address prefix for the subnet."
+      } 
+    }, 
+    "subnetName2": {
+      "type": "string",
+      "defaultValue": "subnet-2",
+      "metadata": {
+        "description": "The name of the second subnet to be created."
       }
-    } 
+    },
+    "subnetAddress2Prefix": {
+      "type": "string",
+      "defaultValue": "192.168.1.0/24",
+      "metadata": {
+        "description": "The address prefix for the second subnet."
+      }
+    }
   },
   "functions": [],
   "variables": {},
@@ -42,28 +56,41 @@
       "properties": {     
         "addressSpace": {
           "addressPrefixes": [ "[parameters('vnetAddressPrefix')]" ]
-        }
+        },
+        "subnets": [
+            {
+                "name": "[parameters('subnetName')]",
+                "id": "",
+                "properties": {
+                    "addressPrefixes": [
+                        "[parameters('subnetAddressPrefix')]"
+                    ],
+                    "delegations": [],
+                    "privateEndpointNetworkPolicies": "Disabled",
+                    "privateLinkServiceNetworkPolicies": "Enabled",
+                    "defaultOutboundAccess": false
+                }
+            },
+            {
+                "name": "[parameters('subnetName2')]",
+                "id": "",
+                "properties": {
+                    "addressPrefixes": [
+                        "[parameters('subnetAddress2Prefix')]"
+                    ],
+                    "delegations": [],
+                    "privateEndpointNetworkPolicies": "Disabled",
+                    "privateLinkServiceNetworkPolicies": "Enabled",
+                    "defaultOutboundAccess": false
+                }
+            }
+        ]
       },
       "tags": {
         "CostCenter": "000",
         "Environment": "Development",
         "Service": "SCOLP",
         "Owner": "MDTP"
-      }
-    },
-    {
-      "type": "Microsoft.Network/virtualNetworks/subnets",
-      "apiVersion": "2025-09-01",
-      "name": "[concat(parameters('vnetName'), '/', parameters('subnetName'))]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
-      ],
-      "properties": {
-        "addressPrefix": "[parameters('subnetAddressPrefix')]",
-        "delegations": [],
-        "privateEndpointNetworkPolicies": "Disabled",
-        "privateLinkServiceNetworkPolicies": "Enabled",
-        "defaultOutboundAccess": false
       }
     }
   ],
